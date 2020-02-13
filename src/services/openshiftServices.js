@@ -328,6 +328,40 @@ const processV4 = (namespace, template) => {
   });
 };
 
+// const getVersions = () => {
+//   getUser().then(user => {
+//     if (user.access_token) {
+//       return axios({
+//         url: `${window.OPENSHIFT_CONFIG.installManifest}`,
+//         method: 'get',
+//         headers: {
+//           authorization: `Bearer ${user.access_token}`,
+//           'content-type': 'application/json'
+//         }
+//       }).then(response => {
+//         const versions = response;
+//       });
+//     }
+//   return versions;
+//   }
+//   );
+// };
+
+const getVersions = () => {
+  axios({
+    url: `${window.OPENSHIFT_CONFIG.installManifest}`,
+    method: 'get'
+    // headers: {
+    //   authorization: `Bearer ${user.access_token}`,
+    //   'content-type': 'application/json'
+    // }
+  }).then(response => {
+    const versions = response;
+    console.log(versions);
+    return versions;
+  });
+};
+
 /**
  * Process and Openshift template and create the template objects
  */
@@ -445,6 +479,7 @@ const _buildProcessUrl = (namespace, obj) => {
 export {
   finishOAuth,
   currentUser,
+  getVersions,
   get,
   create,
   list,

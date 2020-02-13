@@ -642,6 +642,7 @@ function getConfigData(req) {
   const masterUri = `https://${process.env.OPENSHIFT_HOST}`;
   const wssMasterUri = isOpenShift4() ? OPENSHIFT_PROXY_PATH : `wss://${process.env.OPENSHIFT_HOST}`;
   const ssoLogoutUri = isOpenShift4() ? '/' : `https://${process.env.SSO_ROUTE}/auth/realms/openshift/protocol/openid-connect/logout?redirect_uri=${logoutRedirectUri}`;
+  const manifestUri = isOpenShift4() ? '/' : `https://master.uxddev-983c.open.redhat.com/console/project/webapp/browse/secrets/manifest`;
 
   const installedServices = process.env.INSTALLED_SERVICES || '{}';
   return `window.OPENSHIFT_CONFIG = {
@@ -659,7 +660,8 @@ function getConfigData(req) {
     optionalWatchServices: ${JSON.stringify(arrayFromString(process.env.OPTIONAL_WATCH_SERVICES || '', ','))},
     optionalProvisionServices: ${JSON.stringify(arrayFromString(process.env.OPTIONAL_PROVISION_SERVICES || '', ','))},
     openshiftVersion: ${openshiftVersion},
-    provisionedServices: ${installedServices}
+    provisionedServices: ${installedServices},
+    installManifest: ${JSON.stringify(manifestUri)}
   };`;
 }
 

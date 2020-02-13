@@ -16,6 +16,7 @@ import {
 import { ChartPieIcon, ErrorCircleOIcon, HelpIcon, OnRunningIcon, OffIcon } from '@patternfly/react-icons';
 import { getProductDetails, getServiceSortOrder } from '../../services/middlewareServices';
 import { SERVICE_STATUSES, SERVICE_TYPES } from '../../redux/constants/middlewareConstants';
+import { getVersions } from '../../services/openshiftServices';
 
 class InstalledAppsView extends React.Component {
   state = {
@@ -165,6 +166,10 @@ class InstalledAppsView extends React.Component {
                 </DataListCell>,
                 <DataListCell className="integr8ly-pretty-name" key="primary content">
                   <span id="Red Hat OpenShift">Red Hat OpenShift</span>
+                </DataListCell>,
+                <DataListCell className="integr8ly-pretty-name" key="primary content">
+                  <span id="test versions">Test versions </span>
+                  <span id="test versions">{getVersions()}</span>
                 </DataListCell>
                 /* <DataListCell TODO: OpenShift Version
                 key="cell one"
