@@ -47,11 +47,19 @@ const DEFAULT_CUSTOM_CONFIG_DATA = {
   services: []
 };
 
+// const walkthroughLocations =
+//   process.env.WALKTHROUGH_LOCATIONS ||
+//   (process.env.NODE_ENV === 'production'
+//     ? 'https://github.com/integr8ly/tutorial-web-app-walkthroughs'
+//     : '../tutorial-web-app-walkthroughs/walkthroughs');
+
+const walkthroughURL = isOpenShift4()
+  ? 'https://github.com/integr8ly/solution-patterns'
+  : 'https://github.com/integr8ly/tutorial-web-app-walkthroughs';
+
 const walkthroughLocations =
   process.env.WALKTHROUGH_LOCATIONS ||
-  (process.env.NODE_ENV === 'production'
-    ? 'https://github.com/integr8ly/tutorial-web-app-walkthroughs'
-    : '../tutorial-web-app-walkthroughs/walkthroughs');
+  (process.env.NODE_ENV === 'production' ? walkthroughURL : '../tutorial-web-app-walkthroughs/walkthroughs');
 
 const CONTEXT_PREAMBLE = 'preamble';
 const CONTEXT_PARAGRAPH = 'paragraph';
