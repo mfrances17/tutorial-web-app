@@ -8,13 +8,29 @@ import redHatLogo from '../../img/Logo-RedHat-A-Reverse-RGB.svg';
 import managedIntegrationLogo from '../../img/Logo-Red_Hat-Managed_Integration-A-Reverse-RGB.svg';
 import pfBackgroundImage from '../../img/PF4DownstreamBG.svg';
 
+// MF052120 - Testing RHMI config service
+import { getCurrentRhmiConfig, updateRhmiConfig } from '../../services/rhmiConfigServices';
+// import { getCurrentRhmiConfig, updateRhmiConfig } from '../../services/rhmiConfigServices';
+
 const pkgJson = require('../../../package.json');
 
 class AboutModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = { config: {} };
+  }
+
+  componentDidMount() {
+    getCurrentRhmiConfig()
+      .then(response => {
+        if (response) {
+          this.setState({
+            config: response
+          });
+        }
+      })
+      .catch(error => console.log(`ERROR: The error is: ${error}`));
   }
 
   getLogo = () => {
@@ -36,6 +52,9 @@ class AboutModal extends React.Component {
   render() {
     const { isOpen, closeAboutModal } = this.props;
     const browser = detect();
+
+    const rhmiConfig = this.state.config;
+    console.log(rhmiConfig);
 
     const urlParts = window.location.host.split('.');
     const [, , clusterId] = urlParts;
@@ -68,7 +87,38 @@ class AboutModal extends React.Component {
               </TextListItem>
               <TextListItem component="dt">Browser OS</TextListItem>
               <TextListItem component="dd">{browser ? browser.os : ' '}</TextListItem>
+              {/* MF052120 - TESTING RHMI CONFIG SERVICE */}
             </TextList>
+            {JSON.stringify(rhmiConfig) !== '{}' ? (
+              <TextList component="dl">
+                <TextListItem component="dt">RHMI Config</TextListItem>
+                <TextListItem component="dd">{}</TextListItem>
+                <TextListItem component="dt">API Version:</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.apiVersion}</TextListItem>
+                <TextListItem component="dt">Kind:</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.kind}</TextListItem>
+                <TextListItem component="dt">RHMI Config Metadata</TextListItem>
+                <TextListItem component="dd">{}</TextListItem>
+                <TextListItem component="dt">Creation timestamp:</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.metadata.creationTimestamp}</TextListItem>
+                <TextListItem component="dt">Generation:</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.metadata.generation}</TextListItem>
+                <TextListItem component="dt">Name</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.metadata.name}</TextListItem>
+                <TextListItem component="dt">Namespace</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.metadata.namespace}</TextListItem>
+                <TextListItem component="dt">Resource Version</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.metadata.resourceVersion}</TextListItem>
+                <TextListItem component="dt">Upgrade spec</TextListItem>
+                <TextListItem component="dd">{}</TextListItem>
+                <TextListItem component="dt">Always immediately:</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.spec.upgrade.alwaysImmediately.toString()}</TextListItem>
+                <TextListItem component="dt">During next maintenance:</TextListItem>
+                <TextListItem component="dd">{rhmiConfig.spec.upgrade.duringNextMaintenance.toString()}</TextListItem>
+              </TextList>
+            ) : (
+              ' '
+            )}
           </TextContent>
         </PfAboutModal>
       </React.Fragment>
