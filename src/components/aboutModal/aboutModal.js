@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { AboutModal as PfAboutModal, TextContent, TextList, TextListItem } from '@patternfly/react-core';
+import { AboutModal as PfAboutModal, TextContent, TextList, TextListItem, Button } from '@patternfly/react-core';
 
 import { detect } from 'detect-browser';
 import redHatLogo from '../../img/Logo-RedHat-A-Reverse-RGB.svg';
@@ -32,6 +32,10 @@ class AboutModal extends React.Component {
       })
       .catch(error => console.log(`ERROR: The error is: ${error}`));
   }
+
+  // change = (value) => {
+  //   updateRhmiConfig(this.state.);
+  // };
 
   getLogo = () => {
     let clusterType = '';
@@ -120,6 +124,12 @@ class AboutModal extends React.Component {
               ' '
             )}
           </TextContent>
+          <Button 
+          id="settings-save-button" variant="primary" type="button" 
+          // onClick={e => this.change(e, value)}
+          >
+            Change
+          </Button>{' '}
         </PfAboutModal>
       </React.Fragment>
     );
