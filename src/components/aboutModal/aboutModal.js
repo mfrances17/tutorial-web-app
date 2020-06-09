@@ -208,7 +208,7 @@ class AboutModal extends React.Component {
             id="settings-save-button"
             variant="primary"
             type="button"
-            onClick={() => this.changeGenerationValue(2)}
+            onClick={() => this.changeGenerationValue(this.state.config.metadata.generation + 1)}
           >
             Change
           </Button>{' '}
