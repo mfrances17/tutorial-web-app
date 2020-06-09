@@ -10,7 +10,6 @@ import pfBackgroundImage from '../../img/PF4DownstreamBG.svg';
 
 // MF052120 - Testing RHMI config service
 import { getCurrentRhmiConfig, updateRhmiConfig } from '../../services/rhmiConfigServices';
-// import { getCurrentRhmiConfig, updateRhmiConfig } from '../../services/rhmiConfigServices';
 
 const pkgJson = require('../../../package.json');
 
@@ -18,7 +17,55 @@ class AboutModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { config: {} };
+    if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.openshiftVersion === 3) {
+      this.state = {
+        config: {
+          apiVersion: 'integreatly.org/v1alpha1',
+          kind: 'RHMIConfig',
+          metadata: {
+            creationTimestamp: '2020-05-18T20:45:36Z',
+            generation: 1,
+            name: 'rhmi-config',
+            namespace: 'redhat-rhmi-operator',
+            resourceVersion: '37138',
+            selfLink: '/apis/integreatly.org/v1alpha1/namespaces/redhat-rhmi-operator/rhmiconfigs/rhmi-config',
+            uid: 'b6063850-6598-483e-9e91-5dfde651b581'
+          },
+          spec: {
+            backup: {},
+            maintenance: {},
+            upgrade: {
+              alwaysImmediately: false,
+              duringNextMaintenance: false
+            }
+          }
+        }
+      };
+    } else {
+      this.state = {
+        config: {
+          apiVersion: '',
+          kind: '',
+          metadata: {
+            creationTimestamp: '',
+            generation: '',
+            name: '',
+            namespace: '',
+            resourceVersion: '',
+            selfLink: '',
+            uid: ''
+          },
+          spec: {
+            backup: {},
+            maintenance: {},
+            upgrade: {
+              alwaysImmediately: false,
+              duringNextMaintenance: false
+            }
+          }
+        }
+      };
+    }
   }
 
   componentDidMount() {
@@ -33,9 +80,32 @@ class AboutModal extends React.Component {
       .catch(error => console.log(`ERROR: The error is: ${error}`));
   }
 
-  // change = (value) => {
-  //   updateRhmiConfig(this.state.);
-  // };
+  changeGenerationMockValue = value => {
+    this.setState({
+      config: {
+        ...this.state.config,
+        metadata: {
+          ...this.state.config.metadata,
+          generation: value
+        }
+      }
+    });
+  };
+
+  changeGenerationValue = value => {
+    this.setState(
+      {
+        config: {
+          ...this.state.config,
+          metadata: {
+            ...this.state.config.metadata,
+            generation: value
+          }
+        }
+      },
+      () => updateRhmiConfig(this.state.config)
+    );
+  };
 
   getLogo = () => {
     let clusterType = '';
@@ -95,6 +165,8 @@ class AboutModal extends React.Component {
             </TextList>
             {JSON.stringify(rhmiConfig) !== '{}' ? (
               <TextList component="dl">
+                <TextListItem component="dt">&nbsp;</TextListItem>
+                <TextListItem component="dd">{}</TextListItem>
                 <TextListItem component="dt">RHMI Config</TextListItem>
                 <TextListItem component="dd">{}</TextListItem>
                 <TextListItem component="dt">API Version:</TextListItem>
@@ -119,14 +191,24 @@ class AboutModal extends React.Component {
                 <TextListItem component="dd">{rhmiConfig.spec.upgrade.alwaysImmediately.toString()}</TextListItem>
                 <TextListItem component="dt">During next maintenance:</TextListItem>
                 <TextListItem component="dd">{rhmiConfig.spec.upgrade.duringNextMaintenance.toString()}</TextListItem>
+                <TextListItem component="dt"> </TextListItem>
+                <TextListItem component="dd">{}</TextListItem>
               </TextList>
             ) : (
               ' '
             )}
           </TextContent>
-          <Button 
-          id="settings-save-button" variant="primary" type="button" 
-          // onClick={e => this.change(e, value)}
+          <TextContent>
+            <TextList component="dl">
+              <TextListItem component="dt">&nbsp;</TextListItem>
+              <TextListItem component="dd">{}</TextListItem>
+            </TextList>
+          </TextContent>
+          <Button
+            id="settings-save-button"
+            variant="primary"
+            type="button"
+            onClick={() => this.changeGenerationValue(2)}
           >
             Change
           </Button>{' '}
