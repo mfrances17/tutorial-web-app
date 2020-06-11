@@ -5,6 +5,8 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateVariant,
+  Flex,
+  FlexItem,
   Form,
   FormGroup,
   Grid,
@@ -23,6 +25,7 @@ import {
   SkipToContent,
   Tabs,
   Tab,
+  TabContent,
   Text,
   TextArea,
   Title
@@ -254,6 +257,9 @@ class SettingsPage extends React.Component {
     const rhmiConfig = this.state.config;
     console.log(rhmiConfig);
 
+    this.contentRef1 = React.createRef();
+    this.contentRef2 = React.createRef();
+
     // MF 061020 - disabling for testing purposes
     console.log('SECURITY IS DISABLED! Add code back to settings.js when testing is complete.');
     const isAdmin = true;
@@ -355,88 +361,134 @@ class SettingsPage extends React.Component {
           <Breadcrumb homeClickedCallback={() => {}} threadName="Settings" />
           <Grid gutter="md">
             <GridItem>
-              <h1 id="main-content" className="pf-c-title pf-m-2xl pf-u-mt-sm pf-u-mb-lg">
+              <h1 id="main-content" className="pf-c-title pf-m-2xl pf-u-mt-sm pf-u-mb-xs">
                 Settings
               </h1>
             </GridItem>
           </Grid>
         </PageSection>
-        <PageSection>
-          <Grid>
-            <GridItem>
+        <PageSection variant={PageSectionVariants.light} noPadding={true}>
+          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
+            <Tab
+              id="scheduleTab"
+              eventKey={0}
+              title="Managed Integration schedule"
+              tabContentId="scheduleTabSection"
+              tabContentRef={this.contentRef1}
+            />
+            <Tab
+              id="solutionPatternsTab"
+              eventKey={1}
+              title="Solution Pattern content"
+              tabContentId="solutionPatternsTabSection"
+              tabContentRef={this.contentRef2}
+            />
+            </Tabs>
+          </PageSection>
+          <PageSection>
               {isAdmin ? (
                 <React.Fragment>
-                  <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
-                    <Tab
-                      id="scheduleTab"
+                    <TabContent
                       eventKey={0}
-                      title="Managed Integration schedule"
-                      tabContentId="scheduleTabSection"
+                      id="refTab1Section"
+                      ref={this.contentRef1}
+                      aria-label="Tab item 1"
                     >
                       <Text className="pf-u-mt-lg">
                         The schedule for this cluster - [cluster ID] - was last updated by [user] on [date].
                       </Text>
                       <Card className="pf-u-w-100 pf-u-my-xl">
                         <CardHeader>
-                          <h2 className="pf-c-title pf-m-lg">Backups</h2>
+                          <h2 className="pf-c-title pf-m-lg">Daily Backups</h2>
                         </CardHeader>
                         <CardBody>
-                          The backup process will not impact the availability of your cluster. Backups may not be
-                          scheduled during the first hour of your maintenance window.{' '}
-                          <a
-                            href="https://access.redhat.com/documentation/en-us/red_hat_managed_integration/1/html-single/getting_started/index"
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            Learn more
-                          </a>
-                        </CardBody>
-                        <CardBody>
-                          <Form>
-                            <FormGroup
-                              // label="Start time for your backups"
-                              // // type="text"
-                              // // helperText="Enter one value per line. Example: https://www.github.com/integr8ly/tutorial-web-app-walkthroughs.git"
-                              // // helperTextInvalid="URL syntax is incorrect. Example: https://www.github.com/integr8ly/tutorial-web-app-walkthroughs.git"
-                              fieldId="backup-start-time-form"
-                              // isValid={isValid}
-                            >
-                              <Text>Next daily backup:  {rhmiConfig.spec.backup.applyOn}</Text>
-                              <Text>Should be in this format: 14 June 2020; 02:00 am (06:00 UTC)</Text>
-
-                              <Text>Start time for your backups</Text>
-                              <Dropdown
-                                onSelect={this.onSelect}
-                                toggle={
-                                  <DropdownToggle id="toggle-id" onToggle={this.onToggle}>
-                                    12:00 am (04:00 UTC)
-                                  </DropdownToggle>
-                                }
-                                isOpen={this.state.isOpen}
-                                dropdownItems={dropdownItems}
-                              />
-                            </FormGroup>
-                          </Form>
-                        </CardBody>
-                        <CardHeader>
-                          <h2 className="pf-c-title pf-m-lg">Maintenance window</h2>
-                        </CardHeader>
-                        <CardBody>
-                          <Form>
-                            <FormGroup
-                              // label="Next maintenance window:"
-                              // type="text"
-                              // // helperText="Enter one value per line. Example: https://www.github.com/integr8ly/tutorial-web-app-walkthroughs.git"
-                              // // helperTextInvalid="URL syntax is incorrect. Example: https://www.github.com/integr8ly/tutorial-web-app-walkthroughs.git"
-                              fieldId="maintenance-window-form"
-                              // isValid={isValid}
-                            >
-                              <Text>Next maintenance window:</Text>
-                              <Text>{rhmiConfig.spec.maintenance.applyFrom}</Text>
-                              <Text>Should be in this format: 17 June 2020; 01:00 am (05:00 UTC)</Text>
-                            </FormGroup>
-                          </Form>
-                        </CardBody>
+                          <Flex className="pf-m-column">
+                            <FlexItem className="pf-m-spacer-sm">
+                              <Text className="integr8ly__text-small--m-secondary">
+                                The backup process will not impact the availability of your cluster. 
+                                <Button
+                                  variant="link"
+                                  isInline
+                                  component="a"
+                                  href="https://access.redhat.com/documentation/en-us/red_hat_managed_integration/1/html-single/getting_started/index"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  Learn more
+                                </Button>
+                              </Text>
+                            </FlexItem>
+                            <FlexItem className="pf-m-spacer-md">
+                              <Flex>
+                                <FlexItem className="pf-m-spacer-lg">
+                                  <Text>Next daily backup:</Text>
+                                </FlexItem>
+                                <FlexItem>
+                                  <Text>{rhmiConfig.spec.backup.applyOn}</Text>
+                                  <Text>Should be in this format: 14 June 2020; 02:00 am (06:00 UTC)</Text>
+                                </FlexItem>
+                              </Flex>
+                            </FlexItem>
+                            <FlexItem>
+                              <Form>
+                                <FormGroup
+                                  // label="Start time for your backups"
+                                  // // type="text"
+                                  // // helperText="Enter one value per line. Example: https://www.github.com/integr8ly/tutorial-web-app-walkthroughs.git"
+                                  // // helperTextInvalid="URL syntax is incorrect. Example: https://www.github.com/integr8ly/tutorial-web-app-walkthroughs.git"
+                                  fieldId="backup-start-time-form"
+                                  // isValid={isValid}
+                                >
+                                  <Flex className="pf-m-column">
+                                      <Text className="pf-m-spacer-sm integr8ly__text-small">
+                                        <b>Start time for your backups</b>
+                                      </Text>
+                                      <Dropdown
+                                        onSelect={this.onSelect}
+                                        toggle={
+                                          <DropdownToggle id="toggle-id" onToggle={this.onToggle}>
+                                            12:00 am (04:00 UTC)
+                                          </DropdownToggle>
+                                        }
+                                        isOpen={this.state.isOpen}
+                                        dropdownItems={dropdownItems}
+                                      />
+                                  </Flex>
+                                </FormGroup>
+                              </Form>
+                              <Text className="integr8ly__text-small--m-secondary">
+                                Backups may not be scheduled during the first hour of your maintenance window.{' '}
+                              </Text>
+                            </FlexItem>
+                            <FlexItem>
+                              <Title headingLevel="h5" size="lg">
+                                Maintenance window
+                              </Title>
+                            </FlexItem>
+                            <FlexItem>
+                              <Form>
+                                <FormGroup
+                                  // label="Next maintenance window:"
+                                  // type="text"
+                                  // // helperText="Enter one value per line. Example: https://www.github.com/integr8ly/tutorial-web-app-walkthroughs.git"
+                                  // // helperTextInvalid="URL syntax is incorrect. Example: https://www.github.com/integr8ly/tutorial-web-app-walkthroughs.git"
+                                  fieldId="maintenance-window-form"
+                                  // isValid={isValid}
+                                >
+                                  <Flex>
+                                    <FlexItem className="pf-m-spacer-lg">
+                                    <Text>Next maintenance window:</Text>
+                                    </FlexItem>
+                                    <FlexItem>
+                                      <Text>{rhmiConfig.spec.maintenance.applyFrom}</Text>
+                                      <Text>Should be in this format: 17 June 2020; 01:00 am (05:00 UTC)</Text>
+                                    </FlexItem>
+                                  </Flex>
+                                </FormGroup>
+                              </Form>
+                            </FlexItem>
+                          </Flex>
+                          </CardBody>
                         <CardFooter>
                           <Button
                             id="settings-save-button"
@@ -457,12 +509,13 @@ class SettingsPage extends React.Component {
                           </Button>{' '}
                         </CardFooter>
                       </Card>
-                    </Tab>
-                    <Tab
-                      id="solutionPatternsTab"
+                    </TabContent>
+                    <TabContent
                       eventKey={1}
-                      title="Solution Pattern content"
-                      tabContentId="solutionPatternsTabSection"
+                      id="refTab2Section"
+                      ref={this.contentRef2}
+                      aria-label="Tab item 2"
+                      hidden
                     >
                       <PageSection className="pf-u-py-0 pf-u-pl-lg pf-u-pr-0">
                         <Grid gutter="md">
@@ -532,8 +585,7 @@ class SettingsPage extends React.Component {
                           </Button>{' '}
                         </CardFooter>
                       </Card>
-                    </Tab>
-                  </Tabs>
+                      </TabContent>
                 </React.Fragment>
               ) : (
                 <Card className="pf-u-w-50 pf-u-my-xl">
@@ -556,8 +608,6 @@ class SettingsPage extends React.Component {
                   </CardBody>
                 </Card>
               )}
-            </GridItem>
-          </Grid>
         </PageSection>
       </Page>
     );
